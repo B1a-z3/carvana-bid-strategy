@@ -1,6 +1,6 @@
 # Auction Bid Strategy: Which Used Cars Go Bad, and What Should We Bid?
 
-**Live app:** _add your Streamlit link here_ · **Tableau Public:** _add your Tableau link here_
+**Live app:** https://carvana-bid-strategy-cp2bch6sjsclzdxmtt8fz8.streamlit.app/ · **Tableau Public:** https://public.tableau.com/app/profile/nihal.lokesh/viz/Carvana-auction-bid-strategy/Whereistherisk
 
 Carvana buys thousands of cars at auction. In the 72,983 purchases in Carvana's Kaggle dataset ([Don't Get Kicked!](https://www.kaggle.com/c/DontGetKicked)), about **1 in 8 (12.3%)** turned out to be a "bad buy" (a *kick*). This project finds what drives bad buys and tests a risk-adjusted bid policy against Carvana's real purchases.
 
