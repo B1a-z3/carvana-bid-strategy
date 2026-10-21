@@ -47,7 +47,6 @@ PASS_COLORS = {
 
 st.set_page_config(
     page_title="Auction bid strategy",
-    page_icon="🚗",
     layout="wide",
 )
 
@@ -150,7 +149,7 @@ SEGMENT_STORY = {
         "Plain large sedans and specialty vehicles are the safest at about **9%**. Boring cars are good business.",
     ],
     "Wheel type": [
-        "🚩 **The blank box that costs millions.** When the wheel type is *missing* from the listing, "
+        "**The blank box that costs millions.** When the wheel type is *missing* from the listing, "
         "**70%** of cars turn out bad, **5.7× the average**.",
         "A blank field usually means a rushed or partial inspection. What wasn't written down shows up after the sale.",
     ],
@@ -209,10 +208,10 @@ st.markdown(
 )
 
 f1, f2, f3, f4 = st.columns(4)
-f1.metric("🚩 Missing wheel-type record", "70% go bad", help="vs. 12.3% fleet average")
-f2.metric("⏳ 9-year-old cars", "31% go bad", help="vs. 4% for 1-year-old cars")
-f3.metric("🛣️ 85K+ miles", "2× the risk", help="16.5% vs. 7.9% under 50K miles")
-f4.metric("🏛️ ADESA auctions", "+3–4 pts", help="vs. Manheim, even for cars of the same age")
+f1.metric("Missing wheel-type record", "70% go bad", help="vs. 12.3% fleet average")
+f2.metric("9-year-old cars", "31% go bad", help="vs. 4% for 1-year-old cars")
+f3.metric("85K+ miles", "2× the risk", help="16.5% vs. 7.9% under 50K miles")
+f4.metric("ADESA auctions", "+3–4 pts", help="vs. Manheim, even for cars of the same age")
 
 tab_names = ["Where is the risk?", "What would the new bid policy have done?"]
 if TABLEAU_PUBLIC_URL:
@@ -273,7 +272,7 @@ with tabs[0]:
             "Each bar is the share of cars in that group that turned out to be bad buys. "
             "Bars past the dotted line are **riskier than average**.",
             *SEGMENT_STORY.get(dim, ["Switch the dropdown to compare other ways of slicing the fleet."]),
-            "💡 *Try “Wheel type” in the dropdown. It's the single loudest warning sign in the data.*",
+            "*Try “Wheel type” in the dropdown. It's the single loudest warning sign in the data.*",
         )
 
     with right:
@@ -332,7 +331,7 @@ with tabs[0]:
 
     st.divider()
     st.markdown(
-        "#### 🔑 Act 1 in one breath\n"
+        "#### Act 1 in one breath\n"
         "- **A blank wheel-type field is the loudest alarm in the data.** 70% of those cars go bad.\n"
         "- **Age and mileage compound.** Each one is bad on its own; together they're toxic.\n"
         "- **The auction house carries its own risk**, and ADESA is consistently the riskiest.\n"
@@ -401,11 +400,11 @@ with tabs[1]:
         story(
             "Walk away from 4,095 cars, pocket $4.4M",
             "Each bar is one *type* of car the rule told us to skip, and what skipping it did to profit.",
-            "🟢 **The big win: dodging the duds.** We skip **1,028 cars that went bad**, avoiding "
+            "**The big win: dodging the duds.** We skip **1,028 cars that went bad**, avoiding "
             "**$4.5M** in losses.",
-            "🟢 **The quiet win: refusing to overpay.** We also skip **1,362 good cars** that were priced "
+            "**The quiet win: refusing to overpay.** We also skip **1,362 good cars** that were priced "
             "too high to make money, saving another **$0.8M**.",
-            "🔴 **The honest cost.** We'd also miss **1,705 profitable cars**, giving up **$0.9M**. "
+            "**The honest cost.** We'd also miss **1,705 profitable cars**, giving up **$0.9M**. "
             "No rule is perfect, but the trade is about **6 to 1** in our favor.",
         )
 
@@ -487,7 +486,7 @@ with tabs[1]:
 
     st.divider()
     st.markdown(
-        "#### 🏁 The bottom line\n"
+        "#### The bottom line\n"
         "- **+\\$4.4M profit (+27%)** on the same 5 months of auctions, with the bad-buy rate cut from "
         "**12.8% to 8.0%**.\n"
         "- **The price: 28% fewer cars bought.** Fewer cars, but *better* cars. Whether that's worth it "
@@ -496,7 +495,7 @@ with tabs[1]:
         "**2% of cars aged 3 or younger**.\n"
         "- **Next step: prove it live.** Run an A/B test where buyers alternate weeks between the old "
         "and new rule (full plan in the GitHub repo).\n\n"
-        "⚠️ *Read before quoting:* the data has no resale prices, so repair and kick-loss costs are "
+        "*Read before quoting:* the data has no resale prices, so repair and kick-loss costs are "
         "assumptions. The saving stays positive across every cost scenario tested (**\\$2.6M–\\$6.6M**). "
         "We also only see cars Carvana actually won, so real-world gains will likely be smaller."
     )
