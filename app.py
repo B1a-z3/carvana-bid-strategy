@@ -196,7 +196,8 @@ policy.loc[passed & (policy["isbadbuy"] == 0) & (policy["profitifbought"] >= 0),
 # --------------------------------------------------------------------------
 st.title("Auction bid strategy")
 st.caption("Which used cars turn out to be bad buys, and what a risk-adjusted "
-           "bid policy would have saved. Data: Carvana “Don’t Get Kicked!” (Kaggle).")
+           "bid policy would have saved. " \
+           "Data: Carvana “Don’t Get Kicked!” (Kaggle).")
 
 st.markdown(
     "### 1 in 8 cars Carvana bought at auction was a dud. Most of them were *predictable*.\n"
