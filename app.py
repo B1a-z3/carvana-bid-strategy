@@ -269,10 +269,8 @@ with tabs[0]:
                     'cars hidden.</p>', unsafe_allow_html=True)
         story(
             "How to read it",
-            "Each bar is the share of cars in that group that turned out to be bad buys. "
             "Bars past the dotted line are **riskier than average**.",
             *SEGMENT_STORY.get(dim, ["Switch the dropdown to compare other ways of slicing the fleet."]),
-            "*Try “Wheel type” in the dropdown. It's the single loudest warning sign in the data.*",
         )
 
     with right:
