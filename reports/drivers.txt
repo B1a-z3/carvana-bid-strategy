@@ -1,0 +1,40 @@
+Test-window AUC  logistic regression 0.750   XGBoost 0.766
+
+Logistic regression odds ratios (train window; >1 = raises kick odds):
+                          odds_ratio  ci_low  ci_high  p_value
+wheel_type_missing            18.839  17.008   20.868    0.000
+make_NISSAN                    1.311   1.082    1.589    0.006
+age_years                      1.288   1.256    1.321    0.000
+make_KIA                       1.286   1.061    1.558    0.010
+mmr_price_missing              1.281   0.973    1.686    0.078
+make_CHRYSLER                  1.272   1.144    1.413    0.000
+make_FORD                      1.180   1.078    1.291    0.000
+online_sale                    0.824   0.622    1.092    0.179
+auction_ADESA                  1.127   1.044    1.217    0.002
+odometer_per_10k_mi            1.126   1.096    1.156    0.000
+auction_OTHER                  0.945   0.870    1.027    0.181
+make_DODGE                     1.040   0.947    1.142    0.413
+mmr_auction_price_per_1k       0.966   0.946    0.986    0.001
+make_SATURN                    1.034   0.857    1.247    0.726
+clean_vs_avg_gap_per_1k        0.969   0.875    1.073    0.547
+make_PONTIAC                   1.023   0.886    1.180    0.761
+manual_transmission            0.987   0.822    1.185    0.887
+warranty_cost_per_100          1.003   0.997    1.009    0.271
+
+XGBoost mean |SHAP| on test window (log-odds units; direction +1 = higher value -> riskier):
+                                   mean_abs_shap  direction
+WheelType                                  0.356        NaN
+VehicleAge                                 0.265      1.000
+VehOdo                                     0.163      1.000
+VNST                                       0.146        NaN
+retail_spread                              0.133     -1.000
+Model                                      0.109        NaN
+Trim                                       0.093        NaN
+Make                                       0.082        NaN
+MMRAcquisitionAuctionAveragePrice          0.079     -1.000
+SubModel                                   0.065        NaN
+MMRAcquisitionAuctionCleanPrice            0.064     -1.000
+Size                                       0.051        NaN
+VehYear                                    0.048     -1.000
+odo_per_year                               0.046     -1.000
+Auction                                    0.038        NaN

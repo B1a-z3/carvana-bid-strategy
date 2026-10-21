@@ -1,0 +1,24 @@
+# Raw Kaggle data: competition rules forbid redistributing it (download it yourself; see README)
+data/
+*.zip
+
+# Large regenerable output built from the Kaggle test set (python bid_strategy.py)
+reports/bid_sheet.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Tableau autosave/recovery files
+*.twbr
+~*
+
+# Secrets / OS
+.streamlit/secrets.toml
+.DS_Store
+Thumbs.db
+*.exe
+*.msi

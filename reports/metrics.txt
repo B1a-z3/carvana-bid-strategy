@@ -1,0 +1,36 @@
+Windows: train 2009-01-05..2010-03-29 (43789), tune ..2010-08-18 (14487), test 2010-08-18..2010-12-30 (14470 priced cars)
+Test AUC 0.767  Gini 0.534  Brier 0.0865 (base-rate Brier 0.1120)
+Margin chosen on tune window: $0
+
+Back-test on test window (realized profit under the stated assumptions):
+                           cars  kick_rate     profit  per_car
+Historical (bought all)  14,470      0.128 16,535,710    1,143
+Flat-risk bid (no model) 11,214      0.116 19,632,131    1,751
+Model bid, margin $0     10,375      0.080 20,960,273    2,020
+
+SAVING vs historical purchases: $4,424,562 (+26.8%) while buying 72% of the cars; kicks avoided: 1,028
+
+Sensitivity of the saving to each cost assumption (others at default):
+                   saving  hist_per_car  policy_per_car
+scenario                                               
+default         4,424,562         1,143           2,020
+recovery=0.5    5,295,538         1,007           1,994
+recovery=0.85   3,757,531         1,245           2,041
+kick_extra=0    3,963,478         1,207           2,024
+kick_extra=1500 5,400,553         1,014           2,015
+overhead=500    2,835,536         1,643           2,303
+overhead=1500   6,575,356           643           1,779
+
+Calibration by predicted-risk decile:
+        predicted  actual     n
+decile                         
+0           0.030   0.030  1447
+1           0.048   0.045  1447
+2           0.063   0.055  1447
+3           0.078   0.053  1447
+4           0.095   0.082  1447
+5           0.113   0.087  1447
+6           0.136   0.115  1447
+7           0.168   0.135  1447
+8           0.218   0.182  1447
+9           0.490   0.500  1447

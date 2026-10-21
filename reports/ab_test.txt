@@ -1,0 +1,18 @@
+Back-test window: 63 buyers, 20 weeks, 708 active buyer-weeks (~35 per week)
+Primary metric, profit per buyer-week: control $23,356, policy $29,605 (lift $6,249); within-buyer SD $25,676
+Guardrails if fully rolled out: cars bought -28.3%, kick rate 12.8% -> 8.0%
+
+Analytic sample size (alpha 0.05, power 80%, two-sided):
+                   mde_per_buyer_week  buyer_weeks_per_arm  weeks_needed
+true_lift                                                               
+100% of back-test               6,249                  265            15
+50% of back-test                3,125                 1060            60
+25% of back-test                1,562                 4240           240
+
+Simulated power (400 random assignments each; OLS with buyer + week fixed effects, SEs clustered by buyer). The 0% row is the A/A false-positive rate:
+weeks run                        2    4    8    20
+true lift (share of back-test)                    
+0%                             0.01 0.01 0.03 0.06
+25%                            0.01 0.03 0.04 0.12
+50%                            0.00 0.07 0.12 0.37
+100%                           0.03 0.22 0.45 0.82
