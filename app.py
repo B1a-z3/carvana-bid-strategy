@@ -116,6 +116,47 @@ def money(x: float) -> str:
     return f"{sign}${x/1e6:.2f}M" if x >= 1e6 else f"{sign}${x/1e3:.0f}K"
 
 
+def story(title: str, *points: str) -> None:
+    """Boxed 'how to read this chart' bullets, so the dashboard explains itself."""
+    with st.container(border=True):
+        md = f"**{title}**\n\n" + "\n".join(f"- {p}" for p in points)
+        st.markdown(md.replace("$", r"\$"))  # bare $...$ would render as LaTeX
+
+
+# Bullets for the segment chart, keyed by the dropdown value. Numbers come from
+# tableau/segment_risk.csv; update them if the pipeline is re-run.
+SEGMENT_STORY = {
+    "Make": [
+        "**Brand matters, but less than you'd think.** Mercury tops the list at **17%**, while Chevrolet, "
+        "the biggest seller, sits at just **9.7%**.",
+        "The worst offenders are *specific models*, not whole brands. The Ford Windstar goes bad **39%** of the "
+        "time, the Dodge Neon **23%**. Think *watch-list*, not *blacklist*.",
+    ],
+    "Vehicle age": [
+        "**The clock is the strongest dial.** Risk climbs every single year, from **4%** at 1 year old to **31%** at 9.",
+        "A 9-year-old car is **2.5× as likely** to go bad as the average purchase.",
+    ],
+    "Mileage band": [
+        "**Every mile leaves a mark.** Cars under 50K miles go bad **7.9%** of the time, and cars over 85K "
+        "**16.5%**, more than double.",
+        "Mileage hits hardest on *older* cars. See the heatmap →",
+    ],
+    "Auction house": [
+        "**Not all auctions are equal.** ADESA's bad-buy rate is **15.2%**, against **11.5%** at Manheim.",
+        "The gap holds even for cars of the same age, so it's the *channel*, not just the inventory.",
+    ],
+    "Size": [
+        "**Sports cars are the riskiest buys (18.5%)**, followed by large SUVs and compacts.",
+        "Plain large sedans and specialty vehicles are the safest at about **9%**. Boring cars are good business.",
+    ],
+    "Wheel type": [
+        "🚩 **The blank box that costs millions.** When the wheel type is *missing* from the listing, "
+        "**70%** of cars turn out bad, **5.7× the average**.",
+        "A blank field usually means a rushed or partial inspection. What wasn't written down shows up after the sale.",
+    ],
+}
+
+
 def style(fig: go.Figure, height: int = 420) -> go.Figure:
     fig.update_layout(
         template="simple_white",
@@ -156,6 +197,21 @@ policy.loc[passed & (policy["isbadbuy"] == 0) & (policy["profitifbought"] >= 0),
 st.title("Auction bid strategy")
 st.caption("Which used cars turn out to be bad buys, and what a risk-adjusted "
            "bid policy would have saved. Data: Carvana “Don’t Get Kicked!” (Kaggle).")
+
+st.markdown(
+    "### 1 in 8 cars Carvana bought at auction was a dud. Most of them were *predictable*.\n"
+    "Every bad buy (a **“kick”**) means paying for a car, paying to fix or return it, and then "
+    "selling it at a loss. This dashboard tells the story in two acts:\n"
+    "1. **Where is the risk?** Four red flags that spot a bad buy *before* the hammer falls.\n"
+    "2. **What should we bid?** A simple rule, *“never pay more than the car is worth after risk”*, "
+    "tested on 14,470 real purchases. It would have added **\\$4.4M (+27%)** in profit."
+)
+
+f1, f2, f3, f4 = st.columns(4)
+f1.metric("🚩 Missing wheel-type record", "70% go bad", help="vs. 12.3% fleet average")
+f2.metric("⏳ 9-year-old cars", "31% go bad", help="vs. 4% for 1-year-old cars")
+f3.metric("🛣️ 85K+ miles", "2× the risk", help="16.5% vs. 7.9% under 50K miles")
+f4.metric("🏛️ ADESA auctions", "+3–4 pts", help="vs. Manheim, even for cars of the same age")
 
 tab_names = ["Where is the risk?", "What would the new bid policy have done?"]
 if TABLEAU_PUBLIC_URL:
@@ -211,6 +267,13 @@ with tabs[0]:
                         width="stretch")
         st.markdown(f'<p class="footnote">Segments with fewer than {min_cars:,} '
                     'cars hidden.</p>', unsafe_allow_html=True)
+        story(
+            "How to read it",
+            "Each bar is the share of cars in that group that turned out to be bad buys. "
+            "Bars past the dotted line are **riskier than average**.",
+            *SEGMENT_STORY.get(dim, ["Switch the dropdown to compare other ways of slicing the fleet."]),
+            "💡 *Try “Wheel type” in the dropdown. It's the single loudest warning sign in the data.*",
+        )
 
     with right:
         # ---- Older + higher-mileage = riskier ----------------------------
@@ -233,6 +296,14 @@ with tabs[0]:
         fig.update_xaxes(title="Vehicle age (years)", showgrid=False)
         fig.update_yaxes(title=None, autorange="reversed", showgrid=False)
         st.plotly_chart(style(fig, height=300), width="stretch")
+        story(
+            "Time and miles: the double whammy",
+            "Each cell is the bad-buy rate for one age and mileage band. **Darker = riskier.**",
+            "**Young cars forgive miles.** At 1 year old, risk stays around **3–5%** no matter how far the car has been driven.",
+            "**Old cars don't.** A 7-year-old car goes from **8.5%** under 50K miles to **24%** over 85K.",
+            "The danger zone is the **bottom-right corner**: 9-year-old cars with 85K+ miles go bad "
+            "**34%** of the time, about *one in three*.",
+        )
 
         # ---- Is any auction getting worse? -------------------------------
         st.subheader("Is any auction getting worse?")
@@ -249,11 +320,38 @@ with tabs[0]:
                          rangemode="tozero")
         fig.update_xaxes(title=None)
         st.plotly_chart(style(fig, height=320), width="stretch")
+        story(
+            "Where you buy matters as much as what you buy",
+            "Each line is one auction house's bad-buy rate, smoothed over 3 months.",
+            "**ADESA runs hottest almost every month**, at about **15%** in both 2009 and 2010.",
+            "Manheim and the smaller auctions crept up by about **2 points** in 2010, so the gap is closing "
+            "from the *wrong* direction.",
+            "**Takeaway:** auction house belongs in the bid, and a rising line is an early warning to tighten up.",
+        )
+
+    st.divider()
+    st.markdown(
+        "#### 🔑 Act 1 in one breath\n"
+        "- **A blank wheel-type field is the loudest alarm in the data.** 70% of those cars go bad.\n"
+        "- **Age and mileage compound.** Each one is bad on its own; together they're toxic.\n"
+        "- **The auction house carries its own risk**, and ADESA is consistently the riskiest.\n"
+        "- **What about overpaying?** Paying above market *looks* risky, but that's because older cars "
+        "sell further above book value. Compare cars of the same age and the effect disappears.\n"
+        "- These are *knowable before you bid*, so the next tab turns them into a price."
+    )
 
 # ==========================================================================
 # Page 2 — What would the new bid policy have done?
 # ==========================================================================
 with tabs[1]:
+    st.markdown(
+        "### Don't just win the auction. Win the *deal*.\n"
+        "**The rule:** for every car, estimate its chance of going bad. Then set a **maximum bid** "
+        "equal to what it's worth when good, minus the expected cost of it going bad. "
+        "If the auction price goes over that number, **walk away.**\n\n"
+        "We replayed this rule on Carvana's **last 5 months of real purchases** (Aug–Dec 2010), "
+        "cars the model had *never seen*."
+    )
     hist_profit = policy["profitifbought"].sum()
     saving = policy["saving"].sum()
     rate_before = policy["isbadbuy"].mean()
@@ -299,6 +397,16 @@ with tabs[1]:
         fig.update_yaxes(tickprefix="$", tickformat="~s", title="Profit impact")
         fig.update_layout(showlegend=False)
         st.plotly_chart(style(fig, height=400), width="stretch")
+        story(
+            "Walk away from 4,095 cars, pocket $4.4M",
+            "Each bar is one *type* of car the rule told us to skip, and what skipping it did to profit.",
+            "🟢 **The big win: dodging the duds.** We skip **1,028 cars that went bad**, avoiding "
+            "**$4.5M** in losses.",
+            "🟢 **The quiet win: refusing to overpay.** We also skip **1,362 good cars** that were priced "
+            "too high to make money, saving another **$0.8M**.",
+            "🔴 **The honest cost.** We'd also miss **1,705 profitable cars**, giving up **$0.9M**. "
+            "No rule is perfect, but the trade is about **6 to 1** in our favor.",
+        )
 
         # ---- Savings build up every week ---------------------------------
         st.subheader("Savings build up every week")
@@ -310,6 +418,12 @@ with tabs[1]:
         fig.update_yaxes(tickprefix="$", tickformat="~s", title="Cumulative saving")
         fig.update_xaxes(title=None)
         st.plotly_chart(style(fig, height=340), width="stretch")
+        story(
+            "Steady, not lucky",
+            "The line adds up the extra profit week by week across the 5-month test.",
+            "**It climbs every single week.** None of the 20 weeks lost money, and even the weakest added about **$32K**.",
+            "An average week adds about **$220K**. That's a *repeatable process*, not one lucky auction.",
+        )
 
     with right:
         # ---- Price paid vs what we'd bid ----------------------------------
@@ -335,6 +449,14 @@ with tabs[1]:
         st.plotly_chart(style(fig, height=480), width="stretch")
         st.markdown('<p class="footnote">Dots above the dashed line: we paid more '
                     'than the car was worth to us.</p>', unsafe_allow_html=True)
+        story(
+            "Above the line = overpaid",
+            "Each dot is one car. Across: the most our rule would have paid. Up: what Carvana actually paid.",
+            "**Dots below the dashed line** were bought at or under their risk-adjusted value. Those are good deals, and we keep them.",
+            "**Dots above the line** cost more than they were worth. That's **28% of all purchases**.",
+            "The skipped cars went bad **25%** of the time; the cars we kept, just **8%**. "
+            "*The rule finds the duds.*",
+        )
 
         # ---- Saving by auction house --------------------------------------
         st.subheader("Saving by auction house")
@@ -353,6 +475,30 @@ with tabs[1]:
         fig.update_xaxes(tickprefix="$", tickformat="~s", title=None)
         fig.update_yaxes(title=None)
         st.plotly_chart(style(fig, height=220), width="stretch")
+        story(
+            "Every auction house wins",
+            "Extra profit from the rule, split by where the car was bought.",
+            "**Manheim brings in the most ($2.0M)** simply because most cars are bought there.",
+            "**ADESA is where the rule works hardest.** It skips **31%** of ADESA cars, the most of any "
+            "auction, which matches ADESA's higher bad-buy rate in Act 1.",
+            "**Rollout idea:** start where the savings are biggest, then expand.",
+        )
+
+    st.divider()
+    st.markdown(
+        "#### 🏁 The bottom line\n"
+        "- **+\\$4.4M profit (+27%)** on the same 5 months of auctions, with the bad-buy rate cut from "
+        "**12.8% to 8.0%**.\n"
+        "- **The price: 28% fewer cars bought.** Fewer cars, but *better* cars. Whether that's worth it "
+        "depends on how much inventory the business needs.\n"
+        "- **The rule mostly says no to old cars.** It skips about **3 in 4 cars aged 6+ years** but only "
+        "**2% of cars aged 3 or younger**.\n"
+        "- **Next step: prove it live.** Run an A/B test where buyers alternate weeks between the old "
+        "and new rule (full plan in the GitHub repo).\n\n"
+        "⚠️ *Read before quoting:* the data has no resale prices, so repair and kick-loss costs are "
+        "assumptions. The saving stays positive across every cost scenario tested (**\\$2.6M–\\$6.6M**). "
+        "We also only see cars Carvana actually won, so real-world gains will likely be smaller."
+    )
 
     start, end = policy["purchdate"].min(), policy["purchdate"].max()
     st.markdown(
